@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, StatusBar } from 'react-native';
+import api from './services/api';
 
 //Não possuem valor semântico (significado)
 //Não possuem estilização própria
@@ -10,11 +11,20 @@ import { View, Text, StyleSheet, StatusBar } from 'react-native';
 
 
 export default function App() {
+    const [projects, setProjects] = useState([]);
+
+    useEffect(() => {
+        api.get('projects').then(response => {
+            console.log(response.data);
+            setProjects(response.data);
+        })
+    }, []);
+
     return (
         <>
             <StatusBar barStyle="light-content" backgroundColor="#7159c1" />
             <View style={styles.container}>
-                <Text style={styles.title}>Hello GoStack!</Text>
+                {projects.map(project => <Text key={project.id} style={styles.project}>{project.title}</Text>)}
             </View>
         </>
     );
@@ -27,9 +37,8 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
     },
-    title: {
+    project: {
         color: "#fff",
         fontSize: 20,
-        fontWeight: "bold",
     }
 });
